@@ -142,7 +142,7 @@ group by 1,2,3,4,5,6,7,8,9
 
 
 ,FIXED_DATA AS(
-SELECT  date_trunc('month',cast(month as date)) as month,
+SELECT  date_trunc('month',cast(date_parse(month,'%m/%d/%y') as date)) as month,
         market,
         network,
         cast(CASE WHEN "total subscribers"  = 'nan' then null else "total subscribers" end as double) as total_subscribers,
