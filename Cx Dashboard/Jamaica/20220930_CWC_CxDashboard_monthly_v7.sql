@@ -220,7 +220,7 @@ select distinct month,Opco,Market,MarketSize,Product,Biz_Unit,'effectiveness' as
 -------------------------Service Delivery--------------
 
 ,FIXED_DATA AS(
-SELECT  date_trunc('month',cast(month as date)) as month,
+SELECT  date_trunc('month',cast(date_parse(month,'%m/%d/%y') as date)) as month,
         market,
         network,
         cast(CASE WHEN "total subscribers"  = 'nan' then null else "total subscribers" end as double) as total_subscribers,
