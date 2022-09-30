@@ -6,7 +6,7 @@ from "lla_cco_int_ana_prod"."cwp_fmc_churn_prod"
 )
 
 ,FIXED_DATA AS(
-SELECT  date_trunc('month',cast(month as date)) as month,
+SELECT  date_trunc('month',cast(date_parse(month,'%m/%d/%y') as date)) as month,
         market,
         network,
         cast(CASE WHEN "total subscribers"  = 'nan' then null else "total subscribers" end as double) as total_subscribers,
