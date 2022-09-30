@@ -47,7 +47,7 @@ SELECT  distinct month as Month,
         round(i_sl,0) as Inst_SL,
         round(r_sl,0) as Rep_SL
 FROM    FIXED_DATA
-WHERE   market = 'Puerto_Rico' 
+WHERE   market = 'Puerto Rico' 
 GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18
 ORDER BY 1,2,3
 )
