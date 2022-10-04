@@ -76,6 +76,10 @@ GROUP BY 2,1,3
 ORDER BY 2,1,3
 )
 
+----- Costa Rica (se incluye cuando se apruebe la automatizacion)
+
+----- Puerto Rico (Proximo desarrollo)
+
 ----- Union Table
 ,OPCOSs_Union_Table AS(
 SELECT * FROM FMC_CWP_Network
