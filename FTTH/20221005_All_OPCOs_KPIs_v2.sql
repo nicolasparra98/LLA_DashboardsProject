@@ -142,7 +142,7 @@ select  distinct date(date_parse(cast(month as varchar),'%Y%m%d')) as month,
         kpi_name,
         kpi_meas as pNPS
 from "lla_cco_int_san"."cwp_ext_nps_kpis"
-where kpi_name in ('pNPS') and Opco = 'CWP'
+where kpi_name in ('pNPS')
 order by 1
 )
 
