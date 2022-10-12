@@ -196,8 +196,6 @@ THEN 1 ELSE 0 END AS Mobile_RejoinerMonth
 FROM FullMobileBase f LEFT JOIN MobileRejoinerPopulation r ON f.Mobile_Account=r.Mobile_Account AND f.Mobile_Month=CAST(r.Month AS DATE)
 )
 
-SELECT distinct mobilechurnertype,drc,Mobile_RejoinerMonth,mobile_activebom,mobile_activeeom,count(distinct mobile_account)
+SELECT *
 FROM MonthMobileRejoiners
-where mobile_month=date('2022-09-01')
-group by 1,2,3,4,5
---order by 1,2,3,4,5
+where mobile_month=date('2022-09-01') and drc=0
