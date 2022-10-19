@@ -219,7 +219,7 @@ select distinct month,Opco,Market,MarketSize,Product,Biz_Unit,'digital_shift' as
 select distinct month,Opco,Market,MarketSize,Product,Biz_Unit,'effectiveness' as facet,'support-call' as journey_waypoint,'FCR_Care' as kpi_name,kpi_meas,kpi_num,kpi_den,kpi_sla,Kpi_delay_display,Network from wanda_kpis where kpi_name='FRC_Care')
 -------------------------Service Delivery--------------
 
-FIXED_DATA AS(
+,FIXED_DATA AS(
 SELECT  DATE_TRUNC('MONTH', cast(DATE_PARSE(CAST(month AS VARCHAR(10)), '%m/%d/%Y') as date)) as month,
         market,
         network,
