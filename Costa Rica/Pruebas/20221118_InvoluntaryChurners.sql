@@ -1,4 +1,4 @@
-<WITH 
+WITH 
 UsefulFields AS(
 SELECT  DISTINCT DATE_TRUNC ('Month' , cast(dt as date)) AS Month,
         dt,
