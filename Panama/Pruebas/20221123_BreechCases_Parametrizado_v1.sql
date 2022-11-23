@@ -26,7 +26,7 @@ SELECT  distinct DATE_TRUNC('MONTH',CAST(DT AS DATE)) AS month
 from "db-analytics-prod"."fixed_cwp"
 WHERE act_cust_typ_nm = 'Residencial'
         --AND DATE_TRUNC('month',CAST(dt AS DATE)) = DATE_TRUNC('month',CAST(act_cust_strt_dt AS DATE))
-        AND date(dt) between ((SELECT input_month FROM PARAMETERS) - interval '4' month) and ((SELECT input_month FROM PARAMETERS) - interval '1' month)
+        AND date_trunc('month',date(dt)) between ((SELECT input_month FROM PARAMETERS) - interval '4' month) and ((SELECT input_month FROM PARAMETERS) - interval '1' month)
 GROUP BY 1,2
 ORDER BY 1,2
 )
