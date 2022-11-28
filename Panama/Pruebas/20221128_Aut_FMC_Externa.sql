@@ -156,7 +156,7 @@ where rnk=1
 --,Beneficio_cruce as (
 select  cast(Cuenta_fijo as bigint) as household_id,
         cast(serviceno as bigint) as service_id,
-        case when cast(cuenta_fijo as bigint) in (select distinct cuenta from beneficio_manual) and telefonia = 'Pospago' and biz_unit_mo= '1. B2C' and tipo_convergente <> '1. Inscrito en paquete completo' then '2. Beneficio manual' else tipo_convergente end as tipo,
+        case when cast(cuenta_fijo as bigint) in (select distinct cuenta from beneficio_manual) and telefonia = 'Pospago' and biz_unit_mo= '1. B2C' and tipo_convergente <> '1. Inscrito a Paquete completo' then '2. Beneficio manual' else tipo_convergente end as tipo,
         telefonia,
         replace(cast(date_trunc('month', (select Fecha_cierre_fijo from parametros) - interval '10' day) as varchar),'-') as "date",
         biz_unit_mo as "unidad de negocio"
