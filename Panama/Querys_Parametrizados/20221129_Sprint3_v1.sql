@@ -468,7 +468,7 @@ SELECT  month
         ,COUNT(DISTINCT fixedaccount) AS activebase
         ,SUM(monthsale_flag) AS Sales
         ,SUM(straight_soft_dx_flag) AS Soft_Dx
-        ,SUM (Never_Paid_Flag) AS NeverPaid
+        ,SUM(Never_Paid_Flag) AS NeverPaid
         ,SUM(late_inst_flag) AS Long_installs
         ,SUM(early_interaction_flag) AS Early_Issues
         ,SUM(early_ticket_flag) AS Early_ticket
