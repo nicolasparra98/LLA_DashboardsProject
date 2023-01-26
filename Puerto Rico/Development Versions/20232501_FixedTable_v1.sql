@@ -135,7 +135,7 @@ SELECT  CASE    WHEN (A.fix_s_att_account IS NOT NULL AND B.fix_s_att_account IS
         ,fix_e_att_bbCode
         ,fix_e_att_tvCode
         ,fix_e_att_voCode
-FROM BOM_active_base A FULL OUTER JOIN EOM_active_base b 
+FROM BOM_active_base A FULL OUTER JOIN EOM_active_base B
     ON A.fix_s_att_account = B.fix_s_att_account AND A.fix_s_dim_month = B.fix_s_dim_month
 )
 
