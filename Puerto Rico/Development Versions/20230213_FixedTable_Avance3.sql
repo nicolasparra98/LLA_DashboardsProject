@@ -25,7 +25,7 @@ SELECT  date(dt) AS dt
         ,voice AS numVO
         ,null AS oldest_unpaid_bill_dt
         ,first_value(delinquency_days) over(PARTITION BY sub_acct_no_sbb,date_trunc('month',date(dt)) ORDER BY date(dt) DESC) AS last_overdue
-FROM "lcpr.stage.dev"."customer_services_rate_lcpr"
+FROM "lcpr.stage.prod"."insights_customer_services_rates_lcpr"
 WHERE play_type <> '0P'
     AND cust_typ_sbb = 'RES' 
     AND date(dt) BETWEEN ((SELECT input_month FROM parameters) + interval '1' MONTH - interval '1' DAY - interval '2' MONTH) AND  ((SELECT input_month FROM parameters) + interval '1' MONTH) 
