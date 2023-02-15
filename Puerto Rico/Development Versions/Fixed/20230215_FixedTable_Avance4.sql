@@ -422,7 +422,6 @@ GROUP BY 1,2,3,4
 
 ,month_fixed_rejoiners AS (
 SELECT  A.*
-        ,B.fix_s_fla_PRMonth
         ,IF(fix_s_fla_PRMonth = 1 AND fix_s_fla_MainMovement = '5.Come Back to Life',1,0) AS fix_s_fla_Rejoiner
 FROM fixed_table_churn_flag A LEFT JOIN fixed_rejoiner_month_population B
     ON A.fix_s_att_account = B.fix_s_att_account AND A.fix_s_dim_month = CAST(B.month AS DATE)
@@ -506,7 +505,6 @@ SELECT  fix_s_dim_month
                 WHEN fix_s_fla_ChurnType = '2. Fixed Involuntary Churner' THEN 'Involuntary'
                 WHEN fix_s_fla_ChurnFlag = '2. Fixed NonChurner' AND fix_b_att_active = 1 AND fix_e_att_active = 0 AND churn0p = 'Churner0P' THEN '0P Churner'
                     END AS fix_s_fla_ChurnSubType
-        ,fix_s_fla_PRMonth
         ,fix_s_fla_Rejoiner
 FROM prepaid_churner_flag
 )
