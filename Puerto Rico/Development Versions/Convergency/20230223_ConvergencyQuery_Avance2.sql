@@ -128,6 +128,6 @@ group by 1,2,3
 order by 1,2,3,4
 )
 
-SELECT *
+SELECT month, fixed_account, mobile_account
 FROM clean_convergency
 WHERE row_num <= 3
