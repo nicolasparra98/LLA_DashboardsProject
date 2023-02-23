@@ -122,7 +122,7 @@ FROM EOM_convergency
 )
 
 ,clean_convergency as (
-SELECT month, fixed_account, mobile_account, row_number() OVER (PARTITION BY fixed_account ORDER BY fixed_account desc) as row_num
+SELECT month, fixed_account, mobile_account, row_number() OVER (PARTITION BY fixed_account ORDER BY mobile_account desc) as row_num
 FROM full_convergency 
 group by 1,2,3
 order by 1,2,3,4
@@ -130,4 +130,4 @@ order by 1,2,3,4
 
 SELECT month, fixed_account, mobile_account
 FROM clean_convergency
-WHERE row_num <= 3
+WHERE row_num = 1
