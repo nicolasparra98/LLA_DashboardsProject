@@ -58,9 +58,9 @@ SELECT  DATE_TRUNC('MONTH',dt) AS fix_s_dim_month
         ,total_MRC AS fix_b_mes_mrc
         ,overdue AS fix_b_mes_overdue
         ,max_start AS fix_b_att_MaxStart
-        ,CASE   WHEN DATE_DIFF('DAY', Max_Start, DATE(dt)) <= 180 THEN 'Early-Tenure'
-                WHEN DATE_DIFF('DAY', Max_Start, DATE(dt)) > 180 AND DATE_DIFF('DAY', Max_Start, DATE(dt)) <= 360 THEN 'Mid-Tenure'
-                WHEN DATE_DIFF('DAY', Max_Start, DATE(dt)) > 360 THEN 'Late-Tenure'
+        ,CASE   WHEN DATE_DIFF('DAY', Max_Start, DATE(dt)) <= 180 THEN 'Early Tenure'
+                WHEN DATE_DIFF('DAY', Max_Start, DATE(dt)) > 180 AND DATE_DIFF('DAY', Max_Start, DATE(dt)) <= 360 THEN 'Mid Tenure'
+                WHEN DATE_DIFF('DAY', Max_Start, DATE(dt)) > 360 THEN 'Late Tenure'
                     END AS fix_b_fla_tenure
         ,IF(welcome_offer = 'X','1.Real FMC',IF(joint_customer = 'X','2.Near FMC','3.Fixed Only')) AS fix_b_fla_fmc
         ,IF(bill_code IN ('R23X2','F23X2'),1,0) AS fix_b_fla_subsidized
@@ -93,9 +93,9 @@ SELECT  DATE_TRUNC('MONTH',(dt - interval '1' day)) AS fix_s_dim_month
         ,total_MRC AS fix_e_mes_mrc
         ,overdue AS fix_e_mes_overdue
         ,max_start AS fix_e_att_MaxStart
-        ,CASE   WHEN DATE_DIFF('DAY', Max_Start, DATE(dt)) <= 180 THEN 'Early-Tenure'
-                WHEN DATE_DIFF('DAY', Max_Start, DATE(dt)) > 180 AND DATE_DIFF('DAY', Max_Start, DATE(dt)) <= 360 THEN 'Mid-Tenure'
-                WHEN DATE_DIFF('DAY', Max_Start, DATE(dt)) > 360 THEN 'Late-Tenure'
+        ,CASE   WHEN DATE_DIFF('DAY', Max_Start, DATE(dt)) <= 180 THEN 'Early Tenure'
+                WHEN DATE_DIFF('DAY', Max_Start, DATE(dt)) > 180 AND DATE_DIFF('DAY', Max_Start, DATE(dt)) <= 360 THEN 'Mid Tenure'
+                WHEN DATE_DIFF('DAY', Max_Start, DATE(dt)) > 360 THEN 'Late Tenure'
                     END AS fix_e_fla_tenure
         ,IF(welcome_offer = 'X','1.Real FMC',IF(joint_customer = 'X','2.Near FMC','3.Fixed Only')) AS fix_e_fla_fmc
         ,IF(bill_code IN ('R23X2','F23X2'),1,0) AS fix_e_fla_subsidized
