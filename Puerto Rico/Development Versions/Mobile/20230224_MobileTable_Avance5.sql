@@ -1,13 +1,13 @@
 -----------------------------------------------------------------------------------------
 --------------------------- LCPR MOBILE TABLE - V1 --------------------------------------
 -----------------------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS "db_stage_dev"."lcpr_mobile_table_jan_feb23_v2" AS
+--CREATE TABLE IF NOT EXISTS "db_stage_dev"."lcpr_mobile_table_jan_feb23_v3" AS
 
 WITH 
 
 parameters AS (
 --> Seleccionar el mes en que se desea realizar la corrida
-SELECT  DATE_TRUNC('month',DATE('2022-12-01')) AS input_month
+SELECT  DATE_TRUNC('month',DATE('2023-01-01')) AS input_month
         ,85 as overdue_days
 )
 
@@ -20,7 +20,7 @@ SELECT  subsrptn_id AS account
         ,CASE   WHEN DATE_DIFF('day',date(subsrptn_actvtn_dt),(date(dt) + interval '1' month - interval '1' day)) <= 180 THEN 'Early Tenure'
                 WHEN DATE_DIFF('day',date(subsrptn_actvtn_dt),(date(dt) + interval '1' month - interval '1' day)) <= 360 THEN 'Mid Tenure'        
                 WHEN DATE_DIFF('day',date(subsrptn_actvtn_dt),(date(dt) + interval '1' month - interval '1' day)) >  360 THEN 'Late Tenure'
-                    ELSE NULL END AS mob_b_fla_tenure
+                    ELSE NULL END AS mob_b_fla_Tenure
         ,indiv_inslm_amt AS mob_b_mes_MRC
         ,1 AS mob_b_mes_numRGUS
 FROM "lcpr.stage.dev"."tbl_pstpd_cust_mstr_ss_data"
@@ -41,7 +41,7 @@ SELECT  subsrptn_id as account
         ,CASE   WHEN DATE_DIFF('day',date(subsrptn_actvtn_dt),(date(dt) + interval '1' month - interval '1' day)) <= 180 THEN 'Early Tenure'
                 WHEN DATE_DIFF('day',date(subsrptn_actvtn_dt),(date(dt) + interval '1' month - interval '1' day)) <= 360 THEN 'Mid Tenure'        
                 WHEN DATE_DIFF('day',date(subsrptn_actvtn_dt),(date(dt) + interval '1' month - interval '1' day)) >  360 THEN 'Late Tenure'
-                    ELSE NULL END AS mob_e_fla_tenure
+                    ELSE NULL END AS mob_e_fla_Tenure
         ,indiv_inslm_amt AS mob_e_mes_MRC
         ,1 AS mob_e_mes_numRGUS
 FROM "lcpr.stage.dev"."tbl_pstpd_cust_mstr_ss_data"
@@ -66,13 +66,13 @@ SELECT  (SELECT input_month FROM parameters) AS mob_s_dim_month
         ,mob_b_dim_date
         ,mob_b_mes_TenureDays
         ,mob_b_att_MaxStart
-        ,mob_b_fla_tenure
+        ,mob_b_fla_Tenure
         ,mob_b_mes_MRC
         ,mob_b_mes_numRGUS
         ,mob_e_dim_date
         ,mob_e_mes_TenureDays
         ,mob_e_att_MaxStart
-        ,mob_e_fla_tenure
+        ,mob_e_fla_Tenure
         ,mob_e_mes_MRC
         ,mob_e_mes_numRGUS
 FROM BOM_active_base A FULL OUTER JOIN EOM_active_base B
