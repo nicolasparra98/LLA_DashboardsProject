@@ -117,6 +117,7 @@ SELECT  IF(fix_s_dim_month IS NOT NULL,fix_s_dim_month,mob_s_dim_month) AS fmc_s
         ,mob_s_fla_spinmovement
         ,mob_s_fla_churnflag
         ,mob_s_fla_churntype
+        ,mob_s_fla_Rejoiner
         ,CASE   WHEN (fix_b_fla_tenure IS NOT NULL AND mob_b_fla_tenure IS NULL) THEN fix_b_fla_tenure
                 WHEN (fix_b_fla_tenure = mob_b_fla_tenure) THEN fix_b_fla_tenure
                 WHEN (mob_b_fla_tenure IS NOT NULL AND fix_b_fla_tenure IS NULL) THEN mob_b_fla_tenure
@@ -148,9 +149,9 @@ SELECT  *
         ,IF(fmc_e_fla_fmc = '3.Fixed Only',CONCAT(fix_e_fla_MixCodeAdj,' Fixed'),IF(fmc_e_fla_fmc = '4.Mobile Only','P1 Mobile',CONCAT(CAST((CAST(SUBSTR(fix_e_fla_MixCodeAdj,1,1) AS int) + 1) AS VARCHAR),'P FMC'))) AS fmc_e_fla_FMCsegment
         ,IF(fmc_b_fla_fmc = '4.Mobile Only','WIRELESS',fix_b_fla_tech) AS fmc_b_fla_tech
         ,IF(fmc_e_fla_fmc = '4.Mobile Only','WIRELESS',fix_e_fla_tech) AS fmc_e_fla_tech
-        ,CASE   WHEN fix_s_fla_Rejoiner = 1 /*AND mob_s_fla_Rejoiner = 1*/ THEN '1. Full Rejoiner'
-                WHEN fix_s_fla_Rejoiner = 1 /*AND (mob_s_fla_Rejoiner = 0 OR mob_s_fla_Rejoiner IS NULL)*/ THEN '2. Fixed Rejoiner'
-                /*WHEN mob_s_fla_Rejoiner = 1 AND (fix_s_fla_Rejoiner = 0 OR fix_s_fla_Rejoiner IS NULL) THEN '3. Mobile Rejoiner'*/
+        ,CASE   WHEN fix_s_fla_Rejoiner = 1 AND mob_s_fla_Rejoiner = 1 THEN '1. Full Rejoiner'
+                WHEN fix_s_fla_Rejoiner = 1 AND (mob_s_fla_Rejoiner = 0 OR mob_s_fla_Rejoiner IS NULL) THEN '2. Fixed Rejoiner'
+                WHEN mob_s_fla_Rejoiner = 1 AND (fix_s_fla_Rejoiner = 0 OR fix_s_fla_Rejoiner IS NULL) THEN '3. Mobile Rejoiner'
                     ELSE NULL END AS fmc_s_fla_Rejoiner
         ,CASE   WHEN (fix_s_fla_ChurnFlag = '1. Fixed Churner' AND mob_s_fla_ChurnFlag = '1. Mobile Churner') THEN 'Churner'
                 WHEN (fix_s_fla_ChurnFlag = '1. Fixed Churner' AND (mob_s_fla_ChurnFlag =  '2. Mobile NonChurner' OR mob_s_fla_ChurnFlag IS NULL) ) THEN 'Fixed Churner'
