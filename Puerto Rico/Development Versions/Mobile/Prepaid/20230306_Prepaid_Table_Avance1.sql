@@ -194,9 +194,9 @@ SELECT  mob_s_dim_month
         --,mob_s_fla_ChurnFlag
         --,mob_s_fla_ChurnType
         --,IF(mob_b_att_active = 0 AND mob_e_att_active = 1 AND mob_s_att_account IN (SELECT DISTINCT rejoiner_account FROM rejoiner_candidates),1,0) AS mob_s_fla_Rejoiner
-        ,null as mob_s_fla_ChurnFlag
-        ,null as mob_s_fla_ChurnType
-        ,null as mob_s_fla_Rejoiner
+        ,'null' as mob_s_fla_ChurnFlag
+        ,'null' as mob_s_fla_ChurnType
+        ,0 as mob_s_fla_Rejoiner
 --FROM mobile_table_churn_flag
 from spin_movement_flag
 )
