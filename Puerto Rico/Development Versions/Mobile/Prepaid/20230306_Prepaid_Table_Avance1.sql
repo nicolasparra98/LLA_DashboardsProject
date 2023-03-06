@@ -103,26 +103,24 @@ SELECT  *
 FROM main_movement_flag 
 )
 
-
-/*
 ,disconnections AS (
 SELECT  DATE_TRUNC('MONTH',DATE(dt)) AS month
         ,subsrptn_id AS churn_account
         ,date(substr(subsrptn_sts_dt,1,10)) AS disconnection_date
-        ,acct_sts_rsn_desc
-        ,IF(lower(acct_sts_rsn_desc) LIKE '%no%pay%','Involuntary','Voluntary') AS churn_type
-FROM "lcpr.stage.dev"."tbl_pstpd_cust_cxl_incr_data"
+        ,sts_rsn_desc
+        ,IF(lower(sts_rsn_desc) LIKE '%no%pay%','Involuntary','Voluntary') AS churn_type
+FROM "lcpr.stage.dev"."tbl_prepd_erc_cust_cxl_incr_data"
 WHERE DATE(dt) = (SELECT input_month FROM parameters)
         --AND cust_sts = 'O'
         AND acct_type_cd = 'I'
-        AND rgn_nm <> 'VI'
+        AND ba_rgn_nm <> 'VI'
         --AND subsrptn_sts <> 'A'
     AND subsrptn_id NOT IN (SELECT DISTINCT subsrptn_id
-                        FROM "lcpr.stage.dev"."tbl_pstpd_cust_cxl_incr_data"
+                        FROM "lcpr.stage.dev"."tbl_prepd_erc_cust_cxl_incr_data"
                         WHERE DATE(dt) = (SELECT input_month FROM parameters) - interval '1' month
                             --AND cust_sts = 'O'
                             AND acct_type_cd = 'I'
-                            AND rgn_nm <> 'VI'
+                            AND ba_rgn_nm <> 'VI'
                             --AND subsrptn_sts = 'A'
                         )
 )
@@ -150,21 +148,20 @@ FROM spin_movement_flag A LEFT JOIN all_churners B ON A.mob_s_att_account = B.ch
 
 ,rejoiner_candidates AS (
 SELECT  subsrptn_id AS rejoiner_account
-FROM "lcpr.stage.dev"."tbl_pstpd_cust_mstr_ss_data"
+FROM "lcpr.stage.dev"."tbl_prepd_erc_cust_mstr_ss_data"
 WHERE date(dt) = (SELECT input_month FROM parameters) - interval '2' month
     AND cust_sts = 'O'
     AND acct_type_cd = 'I'
-    AND rgn_nm <> 'VI'
+    AND ba_rgn_nm <> 'VI'
     AND subsrptn_sts = 'A'
     AND subsrptn_id NOT IN (SELECT DISTINCT subsrptn_id
-                            FROM "lcpr.stage.dev"."tbl_pstpd_cust_cxl_incr_data"
+                            FROM "lcpr.stage.dev"."tbl_prepd_erc_cust_cxl_incr_data"
                             WHERE DATE(dt) = (SELECT input_month FROM parameters) - interval '1' month
                             AND cust_sts = 'O'
                             AND acct_type_cd = 'I'
-                            AND rgn_nm <> 'VI'
+                            AND ba_rgn_nm <> 'VI'
                             AND subsrptn_sts = 'A')
 )
-*/
 
 ,full_flags AS (
 SELECT  mob_s_dim_month
@@ -172,8 +169,7 @@ SELECT  mob_s_dim_month
         ,mob_s_att_ParentAccount
         ,mob_s_att_MobileType
         ,mob_b_att_active
-        --,IF(mob_s_fla_ChurnFlag = '1. Mobile Churner',0,mob_e_att_active) AS mob_e_att_active
-        ,mob_e_att_active
+        ,IF(mob_s_fla_ChurnFlag = '1. Mobile Churner',0,mob_e_att_active) AS mob_e_att_active
         ,mob_b_dim_date
         ,mob_b_mes_TenureDays
         ,mob_b_att_MaxStart
@@ -185,22 +181,33 @@ SELECT  mob_s_dim_month
         ,mob_e_att_MaxStart
         ,mob_e_fla_Tenure
         ,mob_e_mes_MRC
-        --,IF(mob_s_fla_ChurnFlag = '1. Mobile Churner',0,mob_e_mes_numRGUS) AS mob_e_mes_numRGUS
-        ,mob_e_mes_numRGUS
-        --,IF(mob_s_fla_ChurnFlag = '1. Mobile Churner','6.Null last day',mob_s_fla_MainMovement) AS mob_s_fla_MainMovement
-        ,mob_s_fla_MainMovement
+        ,IF(mob_s_fla_ChurnFlag = '1. Mobile Churner',0,mob_e_mes_numRGUS) AS mob_e_mes_numRGUS
+        ,IF(mob_s_fla_ChurnFlag = '1. Mobile Churner','6.Null last day',mob_s_fla_MainMovement) AS mob_s_fla_MainMovement
         ,mob_s_mes_MRCdiff
         ,mob_s_fla_SpinMovement
-        --,mob_s_fla_ChurnFlag
-        --,mob_s_fla_ChurnType
-        --,IF(mob_b_att_active = 0 AND mob_e_att_active = 1 AND mob_s_att_account IN (SELECT DISTINCT rejoiner_account FROM rejoiner_candidates),1,0) AS mob_s_fla_Rejoiner
-        ,'null' as mob_s_fla_ChurnFlag
-        ,'null' as mob_s_fla_ChurnType
-        ,0 as mob_s_fla_Rejoiner
---FROM mobile_table_churn_flag
-from spin_movement_flag
+        ,mob_s_fla_ChurnFlag
+        ,mob_s_fla_ChurnType
+        ,IF(mob_b_att_active = 0 AND mob_e_att_active = 1 AND mob_s_att_account IN (SELECT DISTINCT rejoiner_account FROM rejoiner_candidates),1,0) AS mob_s_fla_Rejoiner
+FROM mobile_table_churn_flag
 )
 
 SELECT *
 FROM full_flags
 WHERE mob_b_att_active + mob_e_att_active >= 1
+
+/*
+SELECT  mob_s_dim_month
+        ,mob_b_att_active
+        ,mob_e_att_active
+        ,mob_s_fla_MainMovement
+        ,mob_s_fla_SpinMovement
+        ,mob_s_fla_ChurnFlag
+        ,mob_s_fla_ChurnType
+        ,count(distinct mob_s_att_account) as accounts
+        ,sum(mob_b_mes_numRGUS) as BOM_RGUs
+        ,sum(mob_e_mes_numRGUS) as EOM_RGUs
+FROM full_flags
+WHERE mob_b_att_active + mob_e_att_active >= 1
+group by 1,2,3,4,5,6,7
+order by 4,5,6,7
+*/
