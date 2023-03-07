@@ -40,7 +40,7 @@ FROM "lla_cco_int_ana_prod"."cwc_fmc_churn_prod" where month = date(dt))
 )
 
 ,service_delivery AS(
-SELECT  DATE_TRUNC('MONTH', cast(DATE_PARSE(concat(substr(month,1,6),'20',substr(month,7,2)), '%m/%d/%Y') as date)) as month,
+SELECT  DATE_TRUNC('MONTH', cast(DATE_PARSE(CAST(month AS VARCHAR(10)), '%m/%d/%Y') as date)) as month,
         market,
         network,
         cast("total subscribers" as double) as total_subscribers,
