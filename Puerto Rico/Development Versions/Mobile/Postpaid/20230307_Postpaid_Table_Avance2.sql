@@ -105,9 +105,7 @@ FROM main_movement_flag
 
 ,disconnections AS (
 SELECT  A.*
-        --,IF(A.mob_s_fla_MainMovement = '6.Null last day',B.lst_susp_rsn_desc,NULL) AS REASON
-        --,IF(A.mob_s_fla_MainMovement = '6.Null last day',lst_susp_dt,NULL) AS MES
-        ,IF(A.mob_s_fla_MainMovement = '6.Null last day',IF((lower(trim(B.lst_susp_rsn_desc)) LIKE '%no%pay%' OR lower(trim(B.lst_susp_rsn_desc)) LIKE '%invol%') /* AND DATE_TRUNC('month',DATE(B.lst_susp_dt)) = A.mob_s_dim_month */,'2. Mobile Involuntary Churner','1. Mobile Voluntary Churner'),NULL) AS mob_s_fla_ChurnType
+        ,IF(A.mob_s_fla_MainMovement = '6.Null last day',IF((lower(trim(B.lst_susp_rsn_desc)) LIKE '%no%pay%' OR lower(trim(B.lst_susp_rsn_desc)) LIKE '%invol%'),'2. Mobile Involuntary Churner','1. Mobile Voluntary Churner'),NULL) AS mob_s_fla_ChurnType
 FROM spin_movement_flag A LEFT JOIN "lcpr.stage.dev"."tbl_pstpd_cust_mstr_ss_data" B
     ON A.mob_s_dim_month = DATE(B.dt) AND A.mob_s_att_account = B.subsrptn_id
 )
@@ -162,33 +160,9 @@ SELECT  mob_s_dim_month
         ,mob_s_fla_ChurnFlag
         ,mob_s_fla_ChurnType
         ,IF(mob_b_att_active = 0 AND mob_e_att_active = 1 AND mob_s_att_account IN (SELECT DISTINCT rejoiner_account FROM rejoiner_candidates),1,0) AS mob_s_fla_Rejoiner
-        --,REASON
-        --,MES
 FROM mobile_table_churn_flag
 )
 
-/*
-SELECT DT, COUNT (DISTINCT subsrptn_id)
-FROM "lcpr.stage.dev"."tbl_pstpd_cust_cxl_incr_data"
-WHERE subsrptn_id in (
-SELECT distinct mob_s_att_account
+SELECT *
 FROM full_flags
 WHERE mob_b_att_active + mob_e_att_active >= 1
-    AND mob_s_fla_MainMovement ='6.Null last day'
-)
-group by 1
-order by 1,2
-*/
-
-
-select mob_s_dim_month,mob_b_att_active,mob_e_att_active,mob_s_fla_MainMovement, mob_s_fla_SpinMovement,mob_s_fla_ChurnFlag ,mob_s_fla_ChurnType,count(distinct mob_s_att_account) as accounts,sum(mob_b_mes_numRGUS) as BOM_RGUs, sum(mob_e_mes_numRGUS) as EOM_RGUs
-from full_flags
-group by 1,2,3,4,5,6,7
-order by 4,5,6,7
-
-
-/*
-SELECT mob_s_fla_ChurnType,REASON,MES, COUNT(DISTINCT mob_s_att_account)
-FROM FULL_FLAGS
-GROUP BY 1,2,3
-*/
