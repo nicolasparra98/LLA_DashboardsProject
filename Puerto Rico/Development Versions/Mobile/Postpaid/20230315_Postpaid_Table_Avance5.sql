@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------------------
 -------------------------- LCPR POSTPAID TABLE - V1 -------------------------------------
 -----------------------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS "db_stage_dev"."lcpr_postpaid_table_jan_mar15" AS
+--CREATE TABLE IF NOT EXISTS "db_stage_dev"."lcpr_postpaid_table_jan_mar15" AS
 
 WITH 
 
