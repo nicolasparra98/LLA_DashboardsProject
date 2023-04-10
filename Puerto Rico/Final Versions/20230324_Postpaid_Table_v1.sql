@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------------------
---------------------------- LCPR MOBILE TABLE - V1 --------------------------------------
+-------------------------- LCPR POSTPAID TABLE - V1 -------------------------------------
 -----------------------------------------------------------------------------------------
---CREATE TABLE IF NOT EXISTS "db_stage_dev"."lcpr_mobile_table_jan_feb23_v2" AS
+--CREATE TABLE IF NOT EXISTS "db_stage_dev"."lcpr_postpaid_table_jan_mar15" AS
 
 WITH 
 
@@ -17,9 +17,9 @@ SELECT  subsrptn_id AS account
         ,(date(dt) + interval '1' month - interval '1' day) AS mob_b_dim_date
         ,DATE_DIFF('day',date(subsrptn_actvtn_dt),(date(dt) + interval '1' month - interval '1' day)) AS mob_b_mes_TenureDays
         ,date(subsrptn_actvtn_dt) AS mob_b_att_MaxStart
-        ,CASE   WHEN DATE_DIFF('day',date(subsrptn_actvtn_dt),(date(dt) + interval '1' month - interval '1' day)) <= 180 THEN 'Early-Tenure'
-                WHEN DATE_DIFF('day',date(subsrptn_actvtn_dt),(date(dt) + interval '1' month - interval '1' day)) <= 360 THEN 'Mid-Tenure'        
-                WHEN DATE_DIFF('day',date(subsrptn_actvtn_dt),(date(dt) + interval '1' month - interval '1' day)) >  360 THEN 'Late-Tenure'
+        ,CASE   WHEN DATE_DIFF('day',date(subsrptn_actvtn_dt),(date(dt) + interval '1' month - interval '1' day)) <= 180 THEN 'Early Tenure'
+                WHEN DATE_DIFF('day',date(subsrptn_actvtn_dt),(date(dt) + interval '1' month - interval '1' day)) <= 360 THEN 'Mid Tenure'        
+                WHEN DATE_DIFF('day',date(subsrptn_actvtn_dt),(date(dt) + interval '1' month - interval '1' day)) >  360 THEN 'Late Tenure'
                     ELSE NULL END AS mob_b_fla_Tenure
         ,indiv_inslm_amt AS mob_b_mes_MRC
         ,1 AS mob_b_mes_numRGUS
@@ -38,9 +38,9 @@ SELECT  subsrptn_id as account
         ,(date(dt) + interval '1' month - interval '1' day) AS mob_e_dim_date
         ,DATE_DIFF('day',date(subsrptn_actvtn_dt),(date(dt) + interval '1' month - interval '1' day)) AS mob_e_mes_TenureDays
         ,date(subsrptn_actvtn_dt) AS mob_e_att_MaxStart
-        ,CASE   WHEN DATE_DIFF('day',date(subsrptn_actvtn_dt),(date(dt) + interval '1' month - interval '1' day)) <= 180 THEN 'Early-Tenure'
-                WHEN DATE_DIFF('day',date(subsrptn_actvtn_dt),(date(dt) + interval '1' month - interval '1' day)) <= 360 THEN 'Mid-Tenure'        
-                WHEN DATE_DIFF('day',date(subsrptn_actvtn_dt),(date(dt) + interval '1' month - interval '1' day)) >  360 THEN 'Late-Tenure'
+        ,CASE   WHEN DATE_DIFF('day',date(subsrptn_actvtn_dt),(date(dt) + interval '1' month - interval '1' day)) <= 180 THEN 'Early Tenure'
+                WHEN DATE_DIFF('day',date(subsrptn_actvtn_dt),(date(dt) + interval '1' month - interval '1' day)) <= 360 THEN 'Mid Tenure'        
+                WHEN DATE_DIFF('day',date(subsrptn_actvtn_dt),(date(dt) + interval '1' month - interval '1' day)) >  360 THEN 'Late Tenure'
                     ELSE NULL END AS mob_e_fla_Tenure
         ,indiv_inslm_amt AS mob_e_mes_MRC
         ,1 AS mob_e_mes_numRGUS
@@ -61,6 +61,7 @@ SELECT  (SELECT input_month FROM parameters) AS mob_s_dim_month
         ,CASE   WHEN (A.parent_account IS NOT NULL AND B.parent_account IS NOT NULL) OR (A.parent_account IS NOT NULL AND B.parent_account IS NULL) THEN A.parent_account
                 WHEN (A.parent_account IS NULL AND B.parent_account IS NOT NULL) THEN B.parent_account
                     ELSE NULL END AS mob_s_att_ParentAccount
+        ,'Postpaid' AS mob_s_att_MobileType
         ,IF(A.account IS NOT NULL,1,0) AS mob_b_att_active
         ,IF(B.account IS NOT NULL,1,0) AS mob_e_att_active
         ,mob_b_dim_date
@@ -107,7 +108,24 @@ SELECT  DATE_TRUNC('MONTH',DATE(dt)) AS month
         ,subsrptn_id AS churn_account
         ,date(substr(subsrptn_sts_dt,1,10)) AS disconnection_date
         ,acct_sts_rsn_desc
-        ,IF(lower(acct_sts_rsn_desc) LIKE '%no%pay%','Involuntary','Voluntary') AS churn_type
+        ,IF((lower(acct_sts_rsn_desc) LIKE '%no%pay%' 
+                or lower(acct_sts_rsn_desc) LIKE '%no%use%'
+                or lower(acct_sts_rsn_desc) LIKE '%fraud%'
+                or lower(acct_sts_rsn_desc) LIKE '%off%net%'
+                or lower(acct_sts_rsn_desc) LIKE '%pay%def%'
+                or lower(acct_sts_rsn_desc) LIKE '%lost%equip%'
+                or lower(acct_sts_rsn_desc) LIKE '%tele%conv%'
+                or lower(acct_sts_rsn_desc) LIKE '%cont%acce%req%'
+                or lower(acct_sts_rsn_desc) LIKE '%proce%'
+                or lower(lst_susp_rsn_desc) LIKE '%no%pay%'
+                or lower(lst_susp_rsn_desc) LIKE '%no%use%'
+                or lower(lst_susp_rsn_desc) LIKE '%fraud%'
+                or lower(lst_susp_rsn_desc) LIKE '%off%net%'
+                or lower(lst_susp_rsn_desc) LIKE '%pay%def%'
+                or lower(lst_susp_rsn_desc) LIKE '%lost%equip%'
+                or lower(lst_susp_rsn_desc) LIKE '%tele%conv%'
+                --or lower(lst_susp_rsn_desc) LIKE '%cont%acce%req%'
+                or lower(lst_susp_rsn_desc) LIKE '%proce%'),'Involuntary','Voluntary') AS churn_type
 FROM "lcpr.stage.dev"."tbl_pstpd_cust_cxl_incr_data"
 WHERE DATE(dt) = (SELECT input_month FROM parameters)
         --AND cust_sts = 'O'
@@ -162,11 +180,24 @@ WHERE date(dt) = (SELECT input_month FROM parameters) - interval '2' month
                             AND subsrptn_sts = 'A')
 )
 
+,cleaning as (
+SELECT  subsrptn_id AS account
+FROM "lcpr.stage.dev"."tbl_pstpd_cust_mstr_ss_data"
+WHERE date(dt) = (SELECT input_month FROM parameters) - interval '1' month
+    AND cust_sts = 'O'
+    AND acct_type_cd = 'I'
+    AND rgn_nm <> 'VI'
+    AND subsrptn_sts = 'A'
+    AND flg_susp_curr_mo = 0
+    AND DATE_TRUNC('MONTH',DATE(IF(LENGTH(TRIM(lst_susp_dt)) = 10,TRIM(lst_susp_dt),'1900-01-01'))) <> (SELECT input_month FROM parameters) - interval '1' month
+)
+
 ,full_flags AS (
 SELECT  mob_s_dim_month
         ,mob_s_att_account
         ,mob_s_att_ParentAccount
-        ,mob_b_att_active
+        ,mob_s_att_MobileType
+        ,IF(mob_s_att_account NOT IN (SELECT DISTINCT account FROM cleaning) AND mob_s_fla_MainMovement = '6.Null last day',0,mob_b_att_active) AS mob_b_att_active
         ,IF(mob_s_fla_ChurnFlag = '1. Mobile Churner',0,mob_e_att_active) AS mob_e_att_active
         ,mob_b_dim_date
         ,mob_b_mes_TenureDays
@@ -182,9 +213,9 @@ SELECT  mob_s_dim_month
         ,IF(mob_s_fla_ChurnFlag = '1. Mobile Churner',0,mob_e_mes_numRGUS) AS mob_e_mes_numRGUS
         ,IF(mob_s_fla_ChurnFlag = '1. Mobile Churner','6.Null last day',mob_s_fla_MainMovement) AS mob_s_fla_MainMovement
         ,mob_s_mes_MRCdiff
-        ,mob_s_fla_SpinMovement
-        ,mob_s_fla_ChurnFlag
-        ,mob_s_fla_ChurnType
+        ,IF(mob_s_fla_ChurnFlag = '1. Mobile Churner','4.NoSpin',mob_s_fla_SpinMovement) AS mob_s_fla_SpinMovement
+        ,IF(mob_s_fla_MainMovement = '6.Null last day' AND mob_s_fla_ChurnFlag = '2. Mobile NonChurner','1. Mobile Churner',mob_s_fla_ChurnFlag) AS mob_s_fla_ChurnFlag
+        ,IF(mob_s_fla_MainMovement = '6.Null last day' AND mob_s_fla_ChurnType IS NULL,'1. Mobile Voluntary Churner',mob_s_fla_ChurnType) AS mob_s_fla_ChurnType
         ,IF(mob_b_att_active = 0 AND mob_e_att_active = 1 AND mob_s_att_account IN (SELECT DISTINCT rejoiner_account FROM rejoiner_candidates),1,0) AS mob_s_fla_Rejoiner
 FROM mobile_table_churn_flag
 )
