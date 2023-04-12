@@ -93,13 +93,7 @@ SELECT  fmc_s_dim_month
         ,COUNT(DISTINCT fix_e_fla_bb) AS fix_e_fla_bb
         ,COUNT(DISTINCT fix_e_fla_tv) AS fix_e_fla_tv
         ,COUNT(DISTINCT fix_e_fla_vo) AS fix_e_fla_vo
-FROM (
-SELECT  *
-FROM "db_stage_dev"."lcpr_fmc_table_jan_mar23"
-UNION ALL
-SELECT  *
-FROM "db_stage_dev"."lcpr_fmc_table_feb_mar23"
-)
+FROM "lla_cco_lcpr_ana_dev"."lcpr_fmc_churn_dev"
 WHERE mob_s_att_duplicates = 1
 GROUP BY    1,2,3,4,5,6,7,8,9,10
             ,11,12,13,14,15,16,17,18,19,20
