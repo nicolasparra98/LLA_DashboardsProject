@@ -48,12 +48,12 @@ SELECT  fmc_s_dim_month
         ,mob_b_att_active
         ,mob_b_dim_date
         ,mob_b_att_maxstart
-        ,IF(mob_s_att_duplicates = 2,mob_b_mes_numrgus - 1,mob_b_mes_numrgus) AS mob_b_mes_numrgus
+        ,IF(mob_s_att_duplicates = 2 AND mob_b_att_active = 1,mob_b_mes_numrgus - 1,mob_b_mes_numrgus) AS mob_b_mes_numrgus
         ,mob_b_fla_tenure
         ,mob_e_att_active
         ,mob_e_dim_date
         ,mob_e_att_maxstart
-        ,IF(mob_s_att_duplicates = 2,mob_e_mes_numrgus - 1,mob_e_mes_numrgus) AS mob_e_mes_numrgus
+        ,IF(mob_s_att_duplicates = 2 AND mob_e_att_active = 1,mob_e_mes_numrgus - 1,mob_e_mes_numrgus) AS mob_e_mes_numrgus
         ,mob_e_fla_tenure
         ,mob_s_fla_mainmovement
         ,mob_s_fla_spinmovement
@@ -73,8 +73,8 @@ SELECT  fmc_s_dim_month
         ,fmc_e_fla_fmcsegment
         ,fmc_s_fla_rejoiner
         ,fmc_s_fla_waterfall
-        ,IF(mob_s_att_duplicates = 2,fmc_b_mes_numrgus - 1,fmc_b_mes_numrgus) AS fmc_b_mes_numrgus
-        ,IF(mob_s_att_duplicates = 2,fmc_e_mes_numrgus - 1,fmc_e_mes_numrgus) AS fmc_e_mes_numrgus
+        ,IF(mob_s_att_duplicates = 2 AND mob_b_att_active = 1,fmc_b_mes_numrgus - 1,fmc_b_mes_numrgus) AS fmc_b_mes_numrgus
+        ,IF(mob_s_att_duplicates = 2 AND mob_e_att_active = 1,fmc_e_mes_numrgus - 1,fmc_e_mes_numrgus) AS fmc_e_mes_numrgus
         ,fmc_s_fla_partialtotalchurn
         ,COUNT(DISTINCT mob_s_att_parentaccount) AS mob_s_att_parentaccount
         ,COUNT(DISTINCT mob_b_mes_tenuredays) AS mob_b_mes_tenuredays
@@ -93,7 +93,7 @@ SELECT  fmc_s_dim_month
         ,COUNT(DISTINCT fix_e_fla_bb) AS fix_e_fla_bb
         ,COUNT(DISTINCT fix_e_fla_tv) AS fix_e_fla_tv
         ,COUNT(DISTINCT fix_e_fla_vo) AS fix_e_fla_vo
-FROM FROM "lla_cco_lcpr_ana_dev"."lcpr_fmc_churn_dev"
+FROM "lla_cco_lcpr_ana_dev"."lcpr_fmc_churn_dev"
 GROUP BY    1,2,3,4,5,6,7,8,9,10
             ,11,12,13,14,15,16,17,18,19,20
             ,21,22,23,24,25,26,27,28,29,30
