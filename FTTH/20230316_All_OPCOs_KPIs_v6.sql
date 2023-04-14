@@ -240,7 +240,7 @@ from (SELECT C.*
                 FROM FMC_Table_CWP A LEFT JOIN CWP_TECH_INTERACTIONS B ON A.MONTH = B.MONTH AND A.fixedaccount = B.ACCOUNT_ID
                 ) C LEFT JOIN CWP_care_INTERACTIONS D ON C.MONTH = D.MONTH AND C.fixedaccount = D.ACCOUNT_ID
         ) E left join CWP_TRUCKROLLS F  ON E.MONTH = F.MONTH AND E.fixedaccount = F.ACCOUNT_ID)
-WHERE Tech IN ('COPPER','FTTH','HFC')
+--WHERE Tech IN ('COPPER','FTTH','HFC')
 GROUP BY 2,1,3
 ORDER BY 2,1,3
 )
