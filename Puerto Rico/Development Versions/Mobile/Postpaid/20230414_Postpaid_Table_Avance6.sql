@@ -268,13 +268,6 @@ SELECT  mob_s_dim_month
 FROM mobile_table_churn_flag
 )
 
-/*
-SELECT mob_s_dim_month,avg(mob_b_mes_MRC),avg(mob_e_mes_MRC)
-FROM full_flags
-WHERE mob_b_att_active + mob_e_att_active >= 1
-group by 1
-*/
-
 SELECT *
 FROM full_flags
 WHERE mob_b_att_active + mob_e_att_active >= 1
