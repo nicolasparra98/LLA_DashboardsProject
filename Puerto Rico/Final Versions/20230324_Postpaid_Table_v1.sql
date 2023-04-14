@@ -143,10 +143,10 @@ FROM customer_status_2
 
 ,spin_movement_flag AS(
 SELECT  *
-        ,ROUND((mob_e_mes_MRC - mob_b_mes_MRC),0) AS mob_s_mes_MRCdiff
-        ,CASE   WHEN mob_s_fla_MainMovement = '1.SameRGUs' AND (mob_e_mes_MRC - mob_b_mes_MRC) = 0 THEN '1.Same'
-                WHEN mob_s_fla_MainMovement = '1.SameRGUs' AND (mob_e_mes_MRC - mob_b_mes_MRC) > 0 THEN '2.Upspin'
-                WHEN mob_s_fla_MainMovement = '1.SameRGUs' AND (mob_e_mes_MRC - mob_b_mes_MRC) < 0 THEN '3.Downspin'
+        ,ROUND((IF(mob_e_mes_MRC IS NULL,0,mob_e_mes_MRC) - IF(mob_b_mes_MRC IS NULL,0,mob_b_mes_MRC)),0) AS mob_s_mes_MRCdiff
+        ,CASE   WHEN mob_s_fla_MainMovement = '1.SameRGUs' AND (IF(mob_e_mes_MRC IS NULL,0,mob_e_mes_MRC) - IF(mob_b_mes_MRC IS NULL,0,mob_b_mes_MRC)) = 0 THEN '1.Same'
+                WHEN mob_s_fla_MainMovement = '1.SameRGUs' AND (IF(mob_e_mes_MRC IS NULL,0,mob_e_mes_MRC) - IF(mob_b_mes_MRC IS NULL,0,mob_b_mes_MRC)) > 0 THEN '2.Upspin'
+                WHEN mob_s_fla_MainMovement = '1.SameRGUs' AND (IF(mob_e_mes_MRC IS NULL,0,mob_e_mes_MRC) - IF(mob_b_mes_MRC IS NULL,0,mob_b_mes_MRC)) < 0 THEN '3.Downspin'
                     ELSE '4.NoSpin' END AS mob_s_fla_SpinMovement
 FROM main_movement_flag 
 )
