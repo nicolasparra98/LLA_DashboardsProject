@@ -87,6 +87,11 @@ SELECT  fmc_s_dim_month
         --,SUM(CAST(ROUND(fmc_e_mes_mrc,0) AS INT)) AS fmc_e_mes_mrc
         --,SUM(CAST(ROUND(mob_b_mes_mrc,0) AS INT)) AS mob_b_mes_mrc
         --,SUM(CAST(ROUND(mob_e_mes_mrc,0) AS INT)) AS mob_e_mes_mrc
+        0 AS mob_s_mes_mrcdiff
+        0 AS fmc_b_mes_mrc
+        0 AS fmc_e_mes_mrc
+        0 AS mob_b_mes_mrc
+        0 AS mob_e_mes_mrc
         ,COUNT(DISTINCT fix_b_fla_bb) AS fix_b_fla_bb
         ,COUNT(DISTINCT fix_b_fla_tv) AS fix_b_fla_tv
         ,COUNT(DISTINCT fix_b_fla_vo) AS fix_b_fla_vo
